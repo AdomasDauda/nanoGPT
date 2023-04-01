@@ -8,5 +8,5 @@ RUN pip install --pre torch -f https://download.pytorch.org/whl/nightly/cpu/torc
 
 COPY . .
 
-CMD ["python", "train.py", "config/train_comments.py"]
+CMD ["python", "train.py"]
 CMD ["python", "sample.py"]
