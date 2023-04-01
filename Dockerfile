@@ -9,7 +9,5 @@ RUN pip install --pre torch -f https://download.pytorch.org/whl/nightly/cpu/torc
 COPY . .
 COPY data /usr/src/app
 
-RUN ls
 CMD ["python", "-u", "train.py"]
-RUN ls
 CMD ["python", "-u", "sample.py"]
