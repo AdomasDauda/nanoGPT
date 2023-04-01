@@ -10,3 +10,4 @@ COPY . .
 COPY data /usr/src/app
 
 CMD ["python", "-u", "train.py"]
+RUN ls
