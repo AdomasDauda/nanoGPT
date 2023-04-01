@@ -40,7 +40,7 @@ eval_only = False # if True, script exits right after the first eval
 always_save_checkpoint = True # if True, always save a checkpoint after each eval
 init_from = 'gpt2' # 'scratch' or 'resume' or 'gpt2*'
 # wandb logging
-wandb_log = False # disabled by default
+wandb_log = True # disabled by default
 wandb_project = 'owt'
 wandb_run_name = 'gpt2' # 'run' + str(time.time())
 # data
@@ -93,13 +93,14 @@ else:
     master_process = True
     seed_offset = 0
     gradient_accumulation_steps *= 8 # simulate 8 gpus
-
-if master_process:
-    os.makedirs(out_dir, exist_ok=True)
+try:
+    os.mkdir(out_dir)
+except:
+    pass
 torch.manual_seed(1337 + seed_offset)
 torch.backends.cuda.matmul.allow_tf32 = True # allow tf32 on matmul
 torch.backends.cudnn.allow_tf32 = True # allow tf32 on cudnn
-device_type = 'cuda' if 'cuda' in device else 'cpu' # for later use in torch.autocast
+device_type = 'cpu' # for later use in torch.autocast
 # note: float16 data type will automatically use a GradScaler
 ptdtype = {'float32': torch.float32, 'bfloat16': torch.bfloat16, 'float16': torch.float16}[dtype]
 ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=device_type, dtype=ptdtype)
@@ -108,8 +109,8 @@ ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=
 train_data = np.memmap(os.path.join('', 'train.bin'), dtype=np.uint16, mode='r')
 val_data = np.memmap(os.path.join('', 'val.bin'), dtype=np.uint16, mode='r')
 
-print("Loaded dataset")
-print(f"Train data: {len(train_data)} val data: {len(val_data)}")
+print(os.popen("echo " + len(train_data)))
+print(os.popen("echo Loaded data sets"))
 
 def get_batch(split):
     data = train_data if split == 'train' else val_data
@@ -148,6 +149,7 @@ if init_from == 'scratch':
     model_args['vocab_size'] = meta_vocab_size if meta_vocab_size is not None else 50304
     gptconf = GPTConfig(**model_args)
     model = GPT(gptconf)
+
 elif init_from == 'resume':
     print(f"Resuming training from {out_dir}")
     # resume training from a checkpoint.
@@ -244,6 +246,7 @@ t0 = time.time()
 local_iter_num = 0 # number of iterations in the lifetime of this process
 raw_model = model.module if ddp else model # unwrap DDP container if needed
 running_mfu = -1.0
+print(os.popen("echo arrived to while loop"))
 while True:
 
     # determine and set the learning rate for this iteration
@@ -275,6 +278,7 @@ while True:
                     'config': config,
                 }
                 print(f"saving checkpoint to {out_dir}")
+                print(os.popen("echo saved model"))
                 torch.save(checkpoint, os.path.join(out_dir, 'ckpt.pt'))
     if iter_num == 0 and eval_only:
         break
