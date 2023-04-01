@@ -196,15 +196,22 @@ if ddp:
 def estimate_loss():
     out = {}
     model.eval()
+    print("eval")
     for split in ['train', 'val']:
+        print("zeroes")
         losses = torch.zeros(eval_iters)
         for k in range(eval_iters):
             X, Y = get_batch(split)
+            print("x,y")
             with ctx:
                 logits, loss = model(X, Y)
+                print("loss, logits")
             losses[k] = loss.item()
+            print("losses[k]")
         out[split] = losses.mean()
+        print("out[split]")
     model.train()
+    print("model train")
     return out
 
 # learning rate decay scheduler (cosine with warmup)
