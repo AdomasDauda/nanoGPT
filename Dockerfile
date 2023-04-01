@@ -9,4 +9,4 @@ RUN pip install --pre torch -f https://download.pytorch.org/whl/nightly/cpu/torc
 COPY . .
 
 CMD ["python", "train.py", "config/train_comments.py"]
-CMD ["python", "sample.py", "--out_dir=out-comments"]
+CMD ["python", "sample.py"]
