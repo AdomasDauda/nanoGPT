@@ -238,6 +238,7 @@ while True:
     # determine and set the learning rate for this iteration
     lr = get_lr(iter_num) if decay_lr else learning_rate
     for param_group in optimizer.param_groups:
+        print(param_group)
         param_group['lr'] = lr
 
     # evaluate the loss on train/val sets and write checkpoints
@@ -261,6 +262,7 @@ while True:
     # forward backward update, with optional gradient accumulation to simulate larger batch size
     # and using the GradScaler if data type is float16
     for micro_step in range(gradient_accumulation_steps):
+        print("micro")
         if ddp:
             # in DDP training we only need to sync gradients at the last micro step.
             # the official way to do this is with model.no_sync() context manager, but
@@ -299,6 +301,14 @@ while True:
     # termination conditions
     if iter_num > max_iters:
         print(f"saving because of termination to {out_dir}")
+        checkpoint = {
+            'model': raw_model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'model_args': model_args,
+            'iter_num': iter_num,
+            'best_val_loss': best_val_loss,
+            'config': config,
+        }
         torch.save(checkpoint, os.path.join(out_dir, 'ckpt.pt'))
         print("reached max iters, terminating")
         break
