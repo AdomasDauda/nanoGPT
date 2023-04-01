@@ -204,6 +204,7 @@ def estimate_loss():
             X, Y = get_batch(split)
             print("x,y")
             with ctx:
+                print("ctx")
                 logits, loss = model(X, Y)
                 print("loss, logits")
             losses[k] = loss.item()
