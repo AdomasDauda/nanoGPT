@@ -11,4 +11,5 @@ COPY data /usr/src/app
 
 RUN ls
 CMD ["python", "train.py"]
+RUN ls
 CMD ["python", "sample.py"]
