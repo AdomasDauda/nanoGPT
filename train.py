@@ -78,8 +78,6 @@ exec(open('configurator.py').read()) # overrides from command line or config fil
 config = {k: globals()[k] for k in config_keys} # will be useful for logging
 # -----------------------------------------------------------------------------
 
-print("help me")
-
 # various inits, derived attributes, I/O setup
 ddp = int(os.environ.get('RANK', -1)) != -1 # is this a ddp run?
 if ddp:
@@ -110,8 +108,6 @@ ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=
 # poor man's data loader
 train_data = np.memmap(os.path.join('', 'train.bin'), dtype=np.uint16, mode='r')
 val_data = np.memmap(os.path.join('', 'val.bin'), dtype=np.uint16, mode='r')
-
-print(os.popen("echo Loaded data sets"))
 
 def get_batch(split):
     data = train_data if split == 'train' else val_data
@@ -247,7 +243,6 @@ t0 = time.time()
 local_iter_num = 0 # number of iterations in the lifetime of this process
 raw_model = model.module if ddp else model # unwrap DDP container if needed
 running_mfu = -1.0
-print(os.popen("echo arrived to while loop"))
 while True:
 
     # determine and set the learning rate for this iteration
