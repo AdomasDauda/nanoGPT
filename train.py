@@ -111,7 +111,6 @@ ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=
 train_data = np.memmap(os.path.join('', 'train.bin'), dtype=np.uint16, mode='r')
 val_data = np.memmap(os.path.join('', 'val.bin'), dtype=np.uint16, mode='r')
 
-print(os.popen("echo " + len(train_data)))
 print(os.popen("echo Loaded data sets"))
 
 def get_batch(split):
