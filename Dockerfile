@@ -10,4 +10,3 @@ COPY . .
 COPY data /usr/src/app
 
 CMD ["python", "-u", "train.py"]
-CMD ["python", "-u", "sample.py"]
