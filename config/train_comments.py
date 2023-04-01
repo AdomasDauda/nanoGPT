@@ -1,11 +1,10 @@
-out_dir = 'out-comments'
 eval_interval = 250 # keep frequent because we'll overfit
 eval_iters = 200
 
 # we expect to overfit on this small dataset, so only save when val improves
 always_save_checkpoint = False
 
-wandb_log = False # override via command line if you like
+wandb_log = True # override via command line if you like
 wandb_project = 'comments'
 wandb_run_name = 'mini-gpt'
 
